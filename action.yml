@@ -1,0 +1,61 @@
+name: "SVGMaker - Image to SVG"
+description: "Convert raster images (PNG, JPG, WebP, etc.) to clean SVG using SVGMaker's AI vectorize or algorithmic trace"
+author: "SVGMaker"
+
+branding:
+  icon: "image"
+  color: "purple"
+
+inputs:
+  api_key:
+    description: "Your SVGMaker API key. Generate one at https://svgmaker.io/account and store it as a GitHub secret."
+    required: true
+  files:
+    description: "Image file(s) to convert. Accepts glob patterns, newline- or comma-separated (e.g. 'assets/**/*.png')."
+    required: true
+  mode:
+    description: "Conversion mode: 'ai' (AI vectorization, 1 credit) or 'trace' (algorithmic trace, 0.5 credit)."
+    required: false
+    default: "ai"
+  algorithm:
+    description: "Trace algorithm (trace mode only). Currently only 'vtracer' is supported."
+    required: false
+    default: "vtracer"
+  output_path:
+    description: "Exact output file path for the generated SVG. Single-file only (errors if the glob matches more than one file). Takes precedence over output_dir."
+    required: false
+    default: ""
+  output_dir:
+    description: "Directory to write generated SVGs into (basenames are flattened). If empty, each SVG is written next to its source image as <name>.svg."
+    required: false
+    default: ""
+  svg_text:
+    description: "AI mode only: request the SVG source inline and write it directly instead of downloading the result URL."
+    required: false
+    default: "false"
+  fail_fast:
+    description: "Stop at the first file that fails to convert. If 'false', continue and fail at the end with a summary."
+    required: false
+    default: "true"
+  base_url:
+    description: "Base URL of the SVGMaker API. Override only for testing."
+    required: false
+    default: "https://svgmaker.io/api"
+
+outputs:
+  svg_paths:
+    description: "JSON array of paths to the generated SVG files."
+  svg_path:
+    description: "Path to the first (or only) generated SVG file. Convenient for single-file conversions."
+  count:
+    description: "Number of images successfully converted."
+  credits_used:
+    description: "Total credits consumed across all conversions."
+  credits_remaining:
+    description: "Remaining credit balance reported by the last conversion."
+  processing_time_ms:
+    description: "Total time taken to process all images (milliseconds)."
+
+runs:
+  using: "node20"
+  main: "dist/index.js"
